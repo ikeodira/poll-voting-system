@@ -1,0 +1,11 @@
+<nav class="navbar" *ngIf="auth.isLoggedIn">
+  <div class="navbar-inner">
+    <a routerLink="/dashboard" class="navbar-brand">PollVote</a>
+    <div class="navbar-links">
+      <a routerLink="/dashboard">Polls</a>
+      <a routerLink="/admin" *ngIf="auth.isAdmin">Admin</a>
+      <a routerLink="/profile">Profile</a>
+      <button class="btn btn-secondary btn-sm" (click)="logout()">Sign out</button>
+    </div>
+  </div>
+</nav>

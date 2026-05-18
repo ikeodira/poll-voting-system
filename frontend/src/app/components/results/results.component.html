@@ -1,0 +1,43 @@
+<div class="page container" style="max-width:640px;">
+  <a [routerLink]="'/polls/' + pollId" class="text-muted" style="font-size:14px;">← Back to poll</a>
+
+  <div class="spinner" *ngIf="loading"></div>
+
+  <div *ngIf="poll && !loading">
+    <h1 style="font-size:22px;font-weight:600;margin:1.25rem 0 0.25rem;">Results</h1>
+    <p class="text-muted mb-2">{{ poll.title }}</p>
+
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;">
+      <label style="font-size:13px;font-weight:500;white-space:nowrap;">Filter by state:</label>
+      <select [(ngModel)]="selectedState" (change)="loadResults()" style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--gray-200);border-radius:8px;font-size:14px;">
+        <option value="">All states</option>
+        <option *ngFor="let s of states" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <div *ngIf="results.length === 0 && !loading" class="card text-center" style="padding:2rem;">
+      <p class="text-muted">No votes yet{{ selectedState ? ' from ' + selectedState : '' }}.</p>
+    </div>
+
+    <div *ngIf="results.length > 0">
+      <p class="text-muted" style="font-size:13px;margin-bottom:1rem;">
+        {{ totalVotes }} total vote{{ totalVotes !== 1 ? 's' : '' }}
+        {{ selectedState ? 'from ' + selectedState : 'across all states' }}
+      </p>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div *ngFor="let r of results" class="card" style="padding:1rem 1.25rem;">
+          <div class="flex-between" style="margin-bottom:0.6rem;">
+            <span style="font-weight:500;">{{ r.optionText }}</span>
+            <span style="font-size:14px;color:var(--gray-600);">
+              {{ r.voteCount }} vote{{ r.voteCount != 1 ? 's' : '' }}
+              ({{ getPercent(r.voteCount) }}%)
+            </span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" [style.width]="getPercent(r.voteCount) + '%'"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

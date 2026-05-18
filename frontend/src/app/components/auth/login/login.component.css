@@ -1,0 +1,34 @@
+/* Login component styles */
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  color: var(--gray-400);
+  transition: color 0.2s, background 0.2s;
+}
+
+.password-toggle:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}

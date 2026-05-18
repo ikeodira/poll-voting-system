@@ -1,0 +1,80 @@
+<div class="page container">
+  <h1 style="font-size:22px;font-weight:600;margin-bottom:1.5rem;">Admin Panel</h1>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;" class="admin-grid">
+
+    <!-- Create poll form -->
+    <div class="card">
+      <h2 style="font-size:17px;font-weight:600;margin-bottom:1rem;">
+        {{ editingPoll ? 'Edit Poll' : 'Create New Poll' }}
+      </h2>
+
+      <div class="alert alert-error" *ngIf="formError">{{ formError }}</div>
+      <div class="alert alert-success" *ngIf="formSuccess">{{ formSuccess }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="submitForm()">
+        <div class="form-group">
+          <label>Title</label>
+          <input formControlName="title" placeholder="Poll question">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="description" placeholder="More context..."></textarea>
+        </div>
+
+        <div *ngIf="!editingPoll">
+          <label style="font-size:13px;font-weight:500;color:var(--gray-600);display:block;margin-bottom:0.5rem;">
+            Options (2–4)
+          </label>
+          <div formArrayName="options">
+            <div *ngFor="let opt of optionsArray.controls; let i = index" style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+              <input [formControlName]="i" placeholder="Option {{ i + 1 }}" style="flex:1;padding:0.55rem 0.75rem;border:1px solid var(--gray-200);border-radius:8px;font-size:14px;">
+              <button type="button" class="btn btn-secondary btn-sm" *ngIf="optionsArray.length > 2" (click)="removeOption(i)">✕</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm mt-1" *ngIf="optionsArray.length < 4" (click)="addOption()">
+            + Add option
+          </button>
+        </div>
+
+        <div *ngIf="editingPoll" class="form-group">
+          <label>Status</label>
+          <select formControlName="status">
+            <option value="active">Active</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+          <button class="btn btn-primary" type="submit" [disabled]="submitting">
+            {{ submitting ? 'Saving...' : (editingPoll ? 'Update Poll' : 'Create Poll') }}
+          </button>
+          <button *ngIf="editingPoll" type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Polls list -->
+    <div>
+      <h2 style="font-size:17px;font-weight:600;margin-bottom:1rem;">All Polls</h2>
+      <div class="spinner" *ngIf="loading"></div>
+      <div *ngIf="!loading && polls.length === 0" class="text-muted">No polls yet.</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div *ngFor="let poll of polls" class="card" style="padding:1rem;">
+          <div class="flex-between" style="margin-bottom:0.4rem;">
+            <span class="badge" [class.badge-active]="poll.status==='active'" [class.badge-closed]="poll.status==='closed'">
+              {{ poll.status }}
+            </span>
+            <div style="display:flex;gap:0.4rem;">
+              <a [routerLink]="'/polls/' + poll.id + '/results'" class="btn btn-secondary btn-sm">Results</a>
+              <button class="btn btn-secondary btn-sm" (click)="startEdit(poll)">Edit</button>
+              <button class="btn btn-danger btn-sm" (click)="deletePoll(poll.id)">Delete</button>
+            </div>
+          </div>
+          <p style="font-weight:500;font-size:14px;">{{ poll.title }}</p>
+          <p class="text-muted">{{ poll.options?.length }} options</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

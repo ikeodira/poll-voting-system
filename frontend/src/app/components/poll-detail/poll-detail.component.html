@@ -1,0 +1,46 @@
+<div class="page container" style="max-width:640px;">
+  <a routerLink="/dashboard" class="text-muted" style="font-size:14px;">← Back to polls</a>
+
+  <div class="spinner" *ngIf="loading"></div>
+  <div class="alert alert-error mt-2" *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="poll && !loading">
+    <div style="margin:1.5rem 0 1rem;">
+      <div class="flex-between">
+        <span class="badge" [class.badge-active]="poll.status==='active'" [class.badge-closed]="poll.status==='closed'">
+          {{ poll.status }}
+        </span>
+        <a [routerLink]="'/polls/' + poll.id + '/results'" class="btn btn-secondary btn-sm">View results</a>
+      </div>
+      <h1 style="font-size:22px;font-weight:600;margin:0.75rem 0 0.4rem;">{{ poll.title }}</h1>
+      <p class="text-muted">{{ poll.description }}</p>
+    </div>
+
+    <!-- Already voted -->
+    <div *ngIf="myVote" class="alert alert-success">
+      You voted for <strong>{{ getVotedOption() }}</strong>.
+      <a [routerLink]="'/polls/' + poll.id + '/results'" style="margin-left:0.5rem;">See results →</a>
+    </div>
+
+    <!-- Closed -->
+    <div *ngIf="poll.status === 'closed' && !myVote" class="alert" style="background:var(--gray-100);border:1px solid var(--gray-200);">
+      This poll is closed. <a [routerLink]="'/polls/' + poll.id + '/results'">View results →</a>
+    </div>
+
+    <!-- Vote options -->
+    <div *ngIf="poll.status === 'active' && !myVote">
+      <p style="font-weight:500;margin-bottom:0.75rem;">Select your answer:</p>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <button
+          *ngFor="let opt of poll.options"
+          class="btn btn-secondary"
+          style="justify-content:flex-start;padding:0.85rem 1rem;text-align:left;"
+          [disabled]="voting"
+          (click)="vote(opt.id)">
+          {{ opt.optionText }}
+        </button>
+      </div>
+      <div class="alert alert-error mt-2" *ngIf="voteError">{{ voteError }}</div>
+    </div>
+  </div>
+</div>
