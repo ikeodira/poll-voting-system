@@ -16,9 +16,5 @@ export class UsersController {
     return result;
   }
 
-  @Get("make-admin/:email")
-  async makeAdmin(@Param("email") email: string) {
-    await this.userRepo.update({ email }, { role: UserRole.ADMIN });
-    return { message: "Done" };
-  }
+ 
 }
